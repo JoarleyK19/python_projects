@@ -1,0 +1,11 @@
+[
+    
+    {
+        "name": "LOCAL",
+        "uri": "localhost",
+        "databaseName": "dbativo",
+        "user": "postgres",
+        "password": "postgres",
+        "sql": "select email from user_app ua where email != '' and email is not null and status is true",
+    }
+]
