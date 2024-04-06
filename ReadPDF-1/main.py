@@ -1,10 +1,17 @@
 import os
-
 import PyPDF2
 import pyttsx3
 import re
 
-import requests
+import nltk
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
+from nltk.stem import WordNetLemmatizer
+
+nltk.data.path.append("C:\\Users\\Joarley Kelix\\AppData\\Roaming\\nltk_data")
+nltk.download('stopwords')
+nltk.download('punkt')
+nltk.download('wordnet')
 
 
 def extract_text_pdf(file):
@@ -22,38 +29,32 @@ def extract_text_pdf(file):
     return text
 
 
-def clean_text_pdf(file):
-    clean_text = re.sub(r'[^a-zA-Z0-9\n]', '', file)
+def clean_text_pdf(text):
+    # Remover caracteres especiais e espaços em branco extras
+    clean_text = re.sub(r'[^a-zA-Z0-9\n]', ' ', text)
+    clean_text = re.sub(r'\s+', ' ', clean_text)
     return clean_text
 
 
-def test_text():
-    text = """
-        A Inteligência Artificial está se espalhando rapidamente em nossa vida cotidiana e o mundo do trabalho não é exceção.
-        Inteligência artificialA IA está cada vez mais a moldar o contexto do emprego: essas áreas emergentes são a tomada de decisões
-        Tomada de decisão automatizadaaumentada e automatizada. Como a tomada de decisões baseada em IA é alimentada por dados pessoais, a
-        Proteção de dadosconformidade com os quadros de proteção de dados é inevitável.
-    """
-    return text
-
-
-def test_connect_pipenv():
-    response = requests.get('https://httpbin.org/ip')
-
-    print('Your IP is {0}'.format(response.json()['origin']))
-
-
 def text_to_audio(text):
-    clean_text = clean_text_pdf(text)
-    motor = pyttsx3.init()
-    motor.setProperty('rate', 150)
-    motor.setProperty('volume', 2.0)
-    motor.setProperty('voice', 'brazil')
-    motor.say(clean_text)
-    motor.runAndWait()
+    tokens = word_tokenize(text.lower())
+    stop_words = set(stopwords.words('portuguese'))
+    filtered_tokens = [word for word in tokens if word not in stop_words]
+    lemmatizer = WordNetLemmatizer()
+    lemmatized_tokens = [lemmatizer.lemmatize(word) for word in filtered_tokens]
+    clean_text = ' '.join(lemmatized_tokens)
+
+    # Sintetizar áudio
+    engine = pyttsx3.init()
+    engine.setProperty('rate', 150)
+    engine.setProperty('volume', 1.0)
+    engine.say(clean_text)
+    engine.runAndWait()
 
 
-# extract_text = extract_text_pdf("artigo.pdf")
-text_to_audio(test_text())
-
-# test_connect_pipenv()
+# Extrair texto do PDF
+extract_text = extract_text_pdf("ril_v57_n225_p43.pdf")
+# Limpar texto extraído
+# cleaned_text = clean_text_pdf(extract_text)
+# Converter texto limpo em áudio
+text_to_audio(extract_text)
