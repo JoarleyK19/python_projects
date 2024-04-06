@@ -1,0 +1,3 @@
+[submodule "ReadPDF"]
+	path = ReadPDF
+	url = https://github.com/JoarleyK19/python_projects.git
