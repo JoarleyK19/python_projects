@@ -5,10 +5,10 @@ import psycopg2
 
 def execute_vacuum_commands():
     connection = psycopg2.connect(
-        dbname="dbativo",
+        dbname="dbpostgres",
         user="postgres",
         password="postgres",
-        host="satelite.ativo247.com.br",
+        host="localhost",
         port="5432"
     )
 
